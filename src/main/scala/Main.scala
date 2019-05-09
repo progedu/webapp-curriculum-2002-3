@@ -3,12 +3,14 @@ object Main extends App {
   println(s"isSorted(Seq(1, 2, 3, 4))(_ < _): ${isSorted(Seq(1, 2, 3, 4))(_ < _)}")
   println(s"isSorted(Seq(1, 2, 3, 2))(_ < _): ${isSorted(Seq(1, 2, 3, 2))(_ < _)}")
 
-  def isSorted[E](sortedSeq: Seq[E])(ordered: (E, E) => Boolean): Boolean = {
-    sortedSeq.grouped(2).foldLeft(true) ((acc, x) => x match {
-      case Seq(a) => acc && true
-      case Seq(a, b) => acc && ordered(a, b)
-      case _ => acc
-    })
+  def isSorted[E](sortedSeq: Seq[E])(isOrdered: (E, E) => Boolean): Boolean = {
+    def loop(seq: Seq[Seq[E]]): Boolean = seq match {
+      case Seq(a, b)::xs => if(isOrdered(a, b)) loop(xs) else false
+      case Seq(a):: _ => true
+      case Seq() => true
+      case _ => true
+    }
+    val seq = sortedSeq.grouped(2).toList
+    loop(seq)
   }
-
 }
